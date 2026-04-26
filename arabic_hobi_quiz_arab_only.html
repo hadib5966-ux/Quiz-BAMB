@@ -1,0 +1,248 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.quiz-wrap{padding:1.5rem 0;max-width:660px;margin:0 auto}
+.header{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:1.25rem 1.5rem;margin-bottom:1.5rem}
+.header-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.badge{background:#EEEDFE;color:#3C3489;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px}
+.header h1{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+.header p{font-size:13px;color:var(--color-text-secondary);margin-top:4px;line-height:1.5}
+.progress-bar-bg{height:6px;background:var(--color-border-tertiary);border-radius:4px;margin:1rem 0 0.5rem}
+.progress-bar-fill{height:6px;background:#7F77DD;border-radius:4px;transition:width 0.4s}
+.progress-text{font-size:12px;color:var(--color-text-secondary)}
+.section-tag{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px}
+.tag-kefahaman{background:#E6F1FB;color:#185FA5}
+.tag-kosa{background:#EAF3DE;color:#3B6D11}
+.tag-meerti{background:#FAEEDA;color:#854F0B}
+.tag-lawan{background:#FAECE7;color:#993C1D}
+.q-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;margin-bottom:1rem;display:none}
+.q-card.active{display:block}
+.q-number{font-size:12px;color:var(--color-text-secondary);margin-bottom:8px}
+.q-arabic{font-size:20px;color:var(--color-text-primary);direction:rtl;text-align:right;margin-bottom:16px;font-weight:500;line-height:1.7}
+.options{display:grid;gap:8px}
+.opt{width:100%;text-align:right;direction:rtl;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:11px 14px;font-size:16px;color:var(--color-text-primary);cursor:pointer;transition:background 0.15s,border-color 0.15s;line-height:1.6}
+.opt:hover{border-color:var(--color-border-secondary)}
+.opt.correct{background:#EAF3DE;border-color:#639922;color:#27500A}
+.opt.wrong{background:#FCEBEB;border-color:#A32D2D;color:#791F1F}
+.opt.reveal{background:#E6F1FB;border-color:#185FA5;color:#0C447C}
+.opt:disabled{cursor:default}
+.feedback{margin-top:10px;padding:10px 14px;border-radius:var(--border-radius-md);font-size:14px;line-height:1.6;display:none;direction:rtl;text-align:right}
+.feedback.correct{background:#EAF3DE;color:#27500A}
+.feedback.wrong{background:#FCEBEB;color:#791F1F}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1rem;gap:8px}
+.nav-btn{padding:8px 20px;font-size:14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:transparent;color:var(--color-text-primary);cursor:pointer}
+.nav-btn:hover{background:var(--color-background-secondary)}
+.nav-btn.primary{background:#7F77DD;border-color:#7F77DD;color:#fff}
+.nav-btn.primary:hover{background:#534AB7}
+.results{display:none;text-align:center;padding:2rem 1rem}
+.score-circle{width:100px;height:100px;border-radius:50%;border:4px solid #7F77DD;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1rem}
+.score-num{font-size:28px;font-weight:500;color:#534AB7}
+.score-total{font-size:13px;color:var(--color-text-secondary)}
+.results h2{font-size:18px;font-weight:500;margin-bottom:8px;color:var(--color-text-primary)}
+.results p{font-size:14px;color:var(--color-text-secondary);margin-bottom:1.5rem}
+.restart-btn{padding:10px 28px;background:#7F77DD;border:none;border-radius:var(--border-radius-md);color:#fff;font-size:14px;cursor:pointer}
+.restart-btn:hover{background:#534AB7}
+.breakdown{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.5rem;text-align:left}
+.bk-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;font-size:13px;color:var(--color-text-secondary)}
+.bk-card strong{display:block;font-size:16px;font-weight:500;color:var(--color-text-primary)}
+</style>
+
+<div class="quiz-wrap">
+<div class="header">
+  <div class="header-top">
+    <span class="badge">BAMB 1134</span>
+    <span class="badge">Kemahiran Berbahasa Arab 1</span>
+  </div>
+  <h1>كُوِيز الهِوَايَات — Kuiz Bahasa Arab</h1>
+  <p>15 soalan dalam Bahasa Arab sahaja — merangkumi kefahaman, kosa kata, kata seerti &amp; kata lawan.</p>
+  <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog" style="width:6.67%"></div></div>
+  <div class="progress-text" id="prog-text">Soalan 1 daripada 15</div>
+</div>
+
+<div id="quiz-area"></div>
+
+<div class="results" id="results">
+  <div class="score-circle"><span class="score-num" id="s-num">0</span><span class="score-total" id="s-tot">/15</span></div>
+  <h2 id="s-msg"></h2>
+  <p id="s-sub"></p>
+  <div class="breakdown">
+    <div class="bk-card"><strong id="b1">0</strong>Kefahaman</div>
+    <div class="bk-card"><strong id="b2">0</strong>Kosa Kata</div>
+    <div class="bk-card"><strong id="b3">0</strong>Kata Seerti</div>
+    <div class="bk-card"><strong id="b4">0</strong>Kata Lawan</div>
+  </div>
+  <button class="restart-btn" onclick="restart()">Cuba Semula</button>
+</div>
+</div>
+
+<script>
+const qs=[
+  {section:"Bahagian 1: Kefahaman",tag:"tag-kefahaman",label:"Kefahaman",
+   ar:"مَا هِيَ هِوَايَةُ الشَّخْصِ الأَوَّلِ؟",
+   opts:["الرَّسْمُ وَالقِرَاءَةُ","عَزْفُ الجِيتَارِ فَقَطْ","التَّصْوِيرُ وَالرَّسْمُ","القِرَاءَةُ فَقَطْ"],
+   ans:0,explain:"✓ هِوَايَتُهُ الرَّسْمُ وَالقِرَاءَةُ."},
+
+  {section:"Bahagian 1: Kefahaman",tag:"tag-kefahaman",label:"Kefahaman",
+   ar:"مَاذَا يُحِبُّ الشَّخْصُ الثَّانِي؟",
+   opts:["الرَّسْمُ وَالقِرَاءَةُ","عَزْفُ الجِيتَارِ وَالتَّصْوِيرُ الفُوتُوغْرَافِيُّ","القِرَاءَةُ وَالتَّصْوِيرُ","كِتَابَةُ الشِّعْرِ"],
+   ans:1,explain:"✓ يُحِبُّ عَزْفَ الجِيتَارِ وَالتَّصْوِيرَ الفُوتُوغْرَافِيَّ."},
+
+  {section:"Bahagian 1: Kefahaman",tag:"tag-kefahaman",label:"Kefahaman",
+   ar:"هَلِ الرَّسْمُ مُمْتِعٌ؟",
+   opts:["لَا، هُوَ صَعْبٌ جِدًّا","نَعَمْ، هُوَ مُمْتِعٌ جِدًّا","أَحْيَانًا فَقَطْ","لَا أَعْرِفُ"],
+   ans:1,explain:"✓ نَعَمْ، الرَّسْمُ مُمْتِعٌ جِدًّا."},
+
+  {section:"Bahagian 1: Kefahaman",tag:"tag-kefahaman",label:"Kefahaman",
+   ar:"مَاذَا يُحِبُّ الشَّخْصُ الأَوَّلُ فِي الرَّسْمِ؟",
+   opts:["يُحِبُّ الأَلْوَانَ الجَمِيلَةَ","يُحِبُّ بَيْعَ لَوْحَاتِهِ","يُحِبُّ إِنْشَاءَ شَيْءٍ مِنَ الصِّفْرِ","يُحِبُّ تَعْلِيمَ الآخَرِينَ"],
+   ans:2,explain:"✓ يُحِبُّ إِنْشَاءَ شَيْءٍ مِنَ الصِّفْرِ."},
+
+  {section:"Bahagian 1: Kefahaman",tag:"tag-kefahaman",label:"Kefahaman",
+   ar:"مَتَى بَدَأَ الشَّخْصُ الثَّانِي عَزْفَ الجِيتَارِ؟",
+   opts:["فِي الجَامِعَةِ","مُنْذُ المَدْرَسَةِ الإِعْدَادِيَّةِ","مُنْذُ الطُّفُولَةِ","بَعْدَ العَمَلِ"],
+   ans:1,explain:"✓ بَدَأَ مُنْذُ المَدْرَسَةِ الإِعْدَادِيَّةِ."},
+
+  {section:"Bahagian 1: Kefahaman",tag:"tag-kefahaman",label:"Kefahaman",
+   ar:"مَتَى أَصْبَحَ التَّصْوِيرُ هِوَايَةً لَهُ؟",
+   opts:["مُنْذُ أَنْ حَصَلَ عَلَى كَامِيرَا","مُنْذُ أَنْ سَافَرَ إِلَى الخَارِجِ","مُنْذُ أَنْ تَعَلَّمَ مِنْ صَدِيقِهِ","مُنْذُ الطُّفُولَةِ"],
+   ans:0,explain:"✓ مُنْذُ أَنْ حَصَلَ عَلَى كَامِيرَا."},
+
+  {section:"Bahagian 1: Kefahaman",tag:"tag-kefahaman",label:"Kefahaman",
+   ar:"هَلْ يُرِيدُ الشَّخْصُ الأَوَّلُ تَعَلُّمَ التَّصْوِيرِ؟",
+   opts:["لَا، هُوَ لَا يُحِبُّ التَّصْوِيرَ","نَعَمْ، هُوَ يُرِيدُ أَنْ يَتَعَلَّمَ","هُوَ لَمْ يَقُلْ شَيْئًا","رُبَّمَا فِي المُسْتَقْبَلِ"],
+   ans:1,explain:"✓ نَعَمْ، هُوَ يُرِيدُ أَنْ يَتَعَلَّمَ أَيْضًا."},
+
+  {section:"Bahagian 1: Kefahaman",tag:"tag-kefahaman",label:"Kefahaman",
+   ar:"هَلِ الشَّخْصُ الثَّانِي سَعِيدٌ بِتَعْلِيمِ صَدِيقِهِ؟",
+   opts:["لَا، هُوَ مَشْغُولٌ","نَعَمْ، هُوَ سَعِيدٌ بِالتَّدْرِيسِ","هُوَ يَحْتَاجُ إِلَى تَفْكِيرٍ","رُبَّمَا بَعْدَ شَهْرٍ"],
+   ans:1,explain:"✓ نَعَمْ، هُوَ سَعِيدٌ بِالتَّدْرِيسِ."},
+
+  {section:"Bahagian 2: Kosa Kata",tag:"tag-kosa",label:"Kosa Kata",
+   ar:"مَا مَعْنَى كَلِمَة «هِوَايَة» بِالمَلَايُوِيَّةِ؟",
+   opts:["Pekerjaan","Hobi","Peperiksaan","Sekolah"],
+   ans:1,explain:"✓ «هِوَايَة» = Hobi."},
+
+  {section:"Bahagian 2: Kosa Kata",tag:"tag-kosa",label:"Kosa Kata",
+   ar:"مَا مَعْنَى «القِرَاءَة» بِالإِنْجِلِيزِيَّةِ؟",
+   opts:["Writing","Speaking","Reading","Listening"],
+   ans:2,explain:"✓ «القِرَاءَة» = Reading. «الكِتَابَة» = Writing."},
+
+  {section:"Bahagian 2: Kosa Kata",tag:"tag-kosa",label:"Kosa Kata",
+   ar:"مَاذَا تَحْتَاجُ لِمُمَارَسَةِ هِوَايَةِ التَّصْوِيرِ؟",
+   opts:["قَلَمٌ","كِتَابٌ","كَامِيرَا","جِيتَارٌ"],
+   ans:2,explain:"✓ أَحْتَاجُ إِلَى كَامِيرَا لِهِوَايَةِ التَّصْوِيرِ."},
+
+  {section:"Bahagian 2: Kosa Kata",tag:"tag-kosa",label:"Kosa Kata",
+   ar:"كَيْفَ نَقُولُ «My Hobby» بِالعَرَبِيَّةِ؟",
+   opts:["هِوَايَتُكَ","هِوَايَتُنَا","هِوَايَتِي","هِوَايَتُهُ"],
+   ans:2,explain:"✓ «هِوَايَتِي» = My Hobby. حَرْفُ «ي» يَدُلُّ عَلَى المُتَكَلِّمِ."},
+
+  {section:"Bahagian 3: Kata Seerti",tag:"tag-meerti",label:"Kata Seerti",
+   ar:"مَا هُوَ مُرَادِفُ كَلِمَة «مُمْتِعٌ»؟",
+   opts:["صَعْبٌ","مُمِلٌّ","شَيِّقٌ","حَزِينٌ"],
+   ans:2,explain:"✓ مُرَادِفُ «مُمْتِعٌ» هُوَ «شَيِّقٌ» — كِلَاهُمَا يَعْنِي مُثِيرًا لِلاهْتِمَامِ."},
+
+  {section:"Bahagian 3: Kata Seerti",tag:"tag-meerti",label:"Kata Seerti",
+   ar:"مَا هُوَ مُرَادِفُ كَلِمَة «بَدَأَ»؟",
+   opts:["أَنْهَى","اِنْتَهَى","اِبْتَدَأَ","رَجَعَ"],
+   ans:2,explain:"✓ «بَدَأَ» وَ«اِبْتَدَأَ» مُتَرَادِفَانِ — كِلَاهُمَا يَعْنِي البَدْءَ."},
+
+  {section:"Bahagian 4: Kata Lawan",tag:"tag-lawan",label:"Kata Lawan",
+   ar:"مَا هُوَ ضِدُّ كَلِمَة «صَعْبَةٌ»؟",
+   opts:["مُمْتِعَةٌ","سَهْلَةٌ","جَمِيلَةٌ","قَدِيمَةٌ"],
+   ans:1,explain:"✓ ضِدُّ «صَعْبَةٌ» هُوَ «سَهْلَةٌ»."},
+];
+
+let cur=0,score=0,answered=false;
+const sectionScores={Kefahaman:[0,0],Kosa_Kata:[0,0],Kata_Seerti:[0,0],Kata_Lawan:[0,0]};
+function getKey(l){return l.replace(" ","_")}
+
+function render(){
+  const area=document.getElementById("quiz-area");
+  const q=qs[cur];
+  area.innerHTML=`
+    <div class="q-card active">
+      <span class="section-tag ${q.tag}">${q.section}</span>
+      <div class="q-number">Soalan ${cur+1} daripada ${qs.length}</div>
+      <div class="q-arabic">${q.ar}</div>
+      <div class="options" id="opts">
+        ${q.opts.map((o,i)=>`<button class="opt" onclick="choose(${i})">${o}</button>`).join("")}
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div class="nav-row">
+        <span style="font-size:13px;color:var(--color-text-secondary)">Skor: ${score}/${cur}</span>
+        <button class="nav-btn primary" id="nxt-btn" onclick="next()" style="display:none">
+          ${cur===qs.length-1?"Lihat Keputusan →":"Seterusnya →"}
+        </button>
+      </div>
+    </div>`;
+  updateProg();
+}
+
+function choose(i){
+  if(answered)return;
+  answered=true;
+  const q=qs[cur];
+  const btns=document.querySelectorAll(".opt");
+  const fb=document.getElementById("fb");
+  btns.forEach(b=>b.disabled=true);
+  if(i===q.ans){
+    btns[i].classList.add("correct");
+    fb.className="feedback correct";
+    fb.textContent=q.explain;
+    score++;
+    sectionScores[getKey(q.label)][0]++;
+  } else {
+    btns[i].classList.add("wrong");
+    btns[q.ans].classList.add("reveal");
+    fb.className="feedback wrong";
+    fb.textContent="✗ الجَوَابُ الصَّحِيحُ: "+q.opts[q.ans]+" — "+q.explain;
+  }
+  sectionScores[getKey(q.label)][1]++;
+  fb.style.display="block";
+  document.getElementById("nxt-btn").style.display="block";
+}
+
+function next(){
+  if(cur<qs.length-1){cur++;answered=false;render();}
+  else showResults();
+}
+
+function updateProg(){
+  const pct=((cur+1)/qs.length*100).toFixed(0);
+  document.getElementById("prog").style.width=pct+"%";
+  document.getElementById("prog-text").textContent="Soalan "+(cur+1)+" daripada "+qs.length;
+}
+
+function showResults(){
+  document.getElementById("quiz-area").innerHTML="";
+  const r=document.getElementById("results");
+  r.style.display="block";
+  document.getElementById("s-num").textContent=score;
+  document.getElementById("s-tot").textContent="/"+qs.length;
+  const pct=Math.round(score/qs.length*100);
+  let msg="",sub="";
+  if(pct>=90){msg="مُمْتَازٌ! Cemerlang!";sub="Prestasi luar biasa. Teruskan semangat belajar bahasa Arab!";}
+  else if(pct>=70){msg="جَيِّدٌ! Bagus!";sub="Prestasi baik. Ulangkaji bahagian yang salah untuk markah lebih tinggi.";}
+  else if(pct>=50){msg="مَقْبُولٌ! Boleh!";sub="Perlu lebih banyak latihan. Cuba semula selepas ulangkaji nota.";}
+  else{msg="اِسْتَمِرَّ! Teruskan Belajar!";sub="Ulangkaji semua soalan dan dialog. Jangan berputus asa!";}
+  document.getElementById("s-msg").textContent=msg;
+  document.getElementById("s-sub").textContent=sub;
+  document.getElementById("b1").textContent=sectionScores["Kefahaman"][0]+"/"+sectionScores["Kefahaman"][1];
+  document.getElementById("b2").textContent=sectionScores["Kosa_Kata"][0]+"/"+sectionScores["Kosa_Kata"][1];
+  document.getElementById("b3").textContent=sectionScores["Kata_Seerti"][0]+"/"+sectionScores["Kata_Seerti"][1];
+  document.getElementById("b4").textContent=sectionScores["Kata_Lawan"][0]+"/"+sectionScores["Kata_Lawan"][1];
+  document.getElementById("prog").style.width="100%";
+  document.getElementById("prog-text").textContent="Selesai!";
+}
+
+function restart(){
+  cur=0;score=0;answered=false;
+  Object.keys(sectionScores).forEach(k=>sectionScores[k]=[0,0]);
+  document.getElementById("results").style.display="none";
+  render();
+}
+
+render();
+</script>
